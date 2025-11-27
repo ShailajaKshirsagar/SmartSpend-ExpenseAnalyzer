@@ -21,8 +21,8 @@ public class User {
     private String email;
     private String password;
 
-    private String deviceId;    // for offline mode
-    private boolean isGuest;    // true = deviceId only
+    private String deviceId;    //for offline mode
+    private boolean isGuest;    //true = deviceId only
 
     private String createdAt;
 }
