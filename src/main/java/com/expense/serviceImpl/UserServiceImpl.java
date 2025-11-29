@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService
                 .password(req.getPassword())
                 .createdAt(LocalDateTime.now())
                 .build();
-
         userRepository.save(user);
         return "User Registered Successfully";
     }
