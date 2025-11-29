@@ -72,4 +72,11 @@ public class ExpenseController {
         Double total =  expenseService.getMonthlyTotal(userId);
         return new ResponseEntity<>(total,HttpStatus.OK);
     }
+
+    //get recent expenses/transactions
+    @GetMapping("/recentExpense")
+    public ResponseEntity<List<ExpenseResponseDto>> getRecentExpenses(@RequestParam Long userId,@RequestParam(defaultValue = "10") int limit) {
+        List<ExpenseResponseDto> expenses = expenseService.getRecentExpenses(userId, limit);
+        return new ResponseEntity<>(expenses,HttpStatus.OK);
+    }
 }

@@ -8,6 +8,7 @@ import com.expense.repository.ExpenseRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.ExpenseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,7 +27,6 @@ public class ExpenseServiceImpl implements ExpenseService
     public String addExpense(ExpenseRequest req) {
         User user = userRepository.findById(req.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         Expense exp = Expense.builder()
                 .title(req.getTitle())
                 .amount(req.getAmount())
@@ -34,7 +34,6 @@ public class ExpenseServiceImpl implements ExpenseService
                 .category(req.getCategory().toLowerCase())
                 .user(user)
                 .build();
-
         expenseRepository.save(exp);
         return "Expense Added Successfully";
     }
@@ -42,7 +41,6 @@ public class ExpenseServiceImpl implements ExpenseService
     @Override
     public List<ExpenseResponseDto> getAllExpenses(Long userId) {
         List<Expense> expenseList = expenseRepository.findByUserId(userId);
-
         return expenseList.stream()
                 .map(expense -> new ExpenseResponseDto(
                         expense.getTitle(),
@@ -56,7 +54,6 @@ public class ExpenseServiceImpl implements ExpenseService
     @Override
     public List<ExpenseResponseDto> getExpenseByDate(Long userId, LocalDate date) {
         List<Expense> expenses = expenseRepository.findByUserIdAndDate(userId,date);
-
         return  expenses.stream()
                 .map(expense -> new ExpenseResponseDto(
                         expense.getTitle(),
@@ -114,4 +111,20 @@ public class ExpenseServiceImpl implements ExpenseService
         int year = today.getYear();
         return expenseRepository.getMonthlyTotal(userId, month, year);
     }
+
+    @Override
+    public List<ExpenseResponseDto> getRecentExpenses(Long userId, int limit) {
+        if (limit <= 0) limit = 10;
+        List<Expense> expenses = expenseRepository.findRecentExpenses(userId, PageRequest.of(0, limit));
+        return  expenses.stream()
+                .map(expense -> new ExpenseResponseDto(
+                        expense.getTitle(),
+                        expense.getAmount(),
+                        expense.getCategory(),
+                        expense.getDate()
+                ))
+                .toList();
+    }
+
+
 }

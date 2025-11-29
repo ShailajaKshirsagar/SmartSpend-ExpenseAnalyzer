@@ -21,4 +21,7 @@ public interface ExpenseService {
     List<ExpenseResponseDto> getTodaysExpenses(Long userId);
 
     Double getMonthlyTotal(Long userId);
+
+    List<ExpenseResponseDto> getRecentExpenses(Long userId, int limit);
+
 }
