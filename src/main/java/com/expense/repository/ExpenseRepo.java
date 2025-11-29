@@ -3,6 +3,7 @@ package com.expense.repository;
 import com.expense.dtos.ExpenseResponseDto;
 import com.expense.entity.Expense;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,5 +40,9 @@ public interface ExpenseRepo extends JpaRepository<Expense,Long> {
         //Monthly total
         @Query("SELECT SUM(e.amount) FROM Expense e WHERE e.user.id =:userId AND MONTH(e.date) =:month AND YEAR(e.date) =:year")
         Double getMonthlyTotal(@Param("userId") Long userId, @Param("month") int month, @Param("year") int year);
+
+        //recent transactions/expeses
+        @Query("SELECT e FROM Expense e WHERE e.user.id =:userId ORDER BY e.date DESC")
+        List<Expense> findRecentExpenses(Long userId, Pageable pageable);
 
 }
