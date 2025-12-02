@@ -1,6 +1,7 @@
 package com.expense.repository;
 
 import com.expense.dtos.ExpenseResponseDto;
+import com.expense.dtos.insights.CategorySummaryDto;
 import com.expense.entity.Expense;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Pageable;
@@ -44,5 +45,32 @@ public interface ExpenseRepo extends JpaRepository<Expense,Long> {
         //recent transactions/expeses
         @Query("SELECT e FROM Expense e WHERE e.user.id =:userId ORDER BY e.date DESC")
         List<Expense> findRecentExpenses(Long userId, Pageable pageable);
+
+        //Total spent per category --> categorysummary
+        @Query(""" 
+        SELECT new com.expense.dtos.insights.CategorySummaryDto(INITCAP(LOWER(e.category)), SUM(e.amount)) FROM Expense e
+        WHERE e.user.id =:userId GROUP BY LOWER(e.category)
+        """)
+        List<CategorySummaryDto> getCategorySummary(@Param("userId") Long userId);
+
+        //monthly category summary
+        @Query("""
+        SELECT new com.expense.dtos.insights.CategorySummaryDto(INITCAP(LOWER(e.category)), SUM(e.amount))
+        FROM Expense e WHERE e.user.id =:userId AND EXTRACT (MONTH FROM e.date) = :month AND EXTRACT(YEAR FROM e.date) = :year
+        GROUP BY LOWER(e.category)
+    """)
+        List<CategorySummaryDto> getMonthlyCategorySummary(@Param("userId") Long userId,
+                                                           @Param("month") int month, @Param("year") int year);
+
+        //weekly or datewise
+        @Query("""
+        SELECT new com.expense.dtos.insights.CategorySummaryDto(INITCAP(LOWER(e.category)),SUM(e.amount))
+        FROM Expense e WHERE e.user.id =:userId AND e.date BETWEEN :fromDate AND :toDate
+        GROUP BY LOWER(e.category)
+        """)
+        List<CategorySummaryDto> getRangeCategorySummary(@Param("userId") Long userId, @Param("fromDate") LocalDate fromDate,
+                @Param("toDate") LocalDate toDate
+        );
+
 
 }
