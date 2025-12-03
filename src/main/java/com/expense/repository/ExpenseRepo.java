@@ -39,7 +39,11 @@ public interface ExpenseRepo extends JpaRepository<Expense,Long> {
         List<Expense> getTodaysExpenses(@Param("userId") Long userId, @Param("today") LocalDate today);
 
         //Monthly total
-        @Query("SELECT SUM(e.amount) FROM Expense e WHERE e.user.id =:userId AND MONTH(e.date) =:month AND YEAR(e.date) =:year")
+        @Query(""" 
+        SELECT COALESCE(SUM(e.amount), 0) FROM Expense e WHERE e.user.id = :userId 
+        AND EXTRACT(MONTH FROM e.date) = :month
+        AND EXTRACT(YEAR FROM e.date) = :year
+        """)
         Double getMonthlyTotal(@Param("userId") Long userId, @Param("month") int month, @Param("year") int year);
 
         //recent transactions/expeses

@@ -47,4 +47,12 @@ public class IncomeServiceImpl implements IncomeService {
                 ))
                 .toList();
     }
+
+    @Override
+    public Double getMonthlyTotal(Long userId) {
+        LocalDate today = LocalDate.now();
+        int month = today.getMonthValue();
+        int year = today.getYear();
+        return incomeRepository.getMonthlyTotal(userId, month, year);
+    }
 }

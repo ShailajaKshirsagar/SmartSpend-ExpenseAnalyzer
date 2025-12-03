@@ -9,4 +9,6 @@ public interface IncomeService {
     String createIncome(Long userId, IncomeRequestDto dto);
 
     List<IncomeResponseDto> getIncome(Long userId);
+
+    Double getMonthlyTotal(Long userId);
 }
