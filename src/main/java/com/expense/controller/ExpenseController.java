@@ -54,7 +54,6 @@ public class ExpenseController {
     //expense by month
     @GetMapping("/getExpenseBy-Month")
     public ResponseEntity<List<ExpenseResponseDto>> getByMonth(@RequestParam Long userId, @RequestParam int month, @RequestParam int year) {
-
         List<ExpenseResponseDto> expenses = expenseService.getExpenseByMonth(userId,month,year);
         return new ResponseEntity<>(expenses,HttpStatus.OK);
     }
@@ -67,7 +66,7 @@ public class ExpenseController {
     }
 
     //monthly total
-    @GetMapping("/getMonthly-total")
+    @GetMapping("/getMonthly-Expensetotal")
     public ResponseEntity<Double> getMonthlyTotal(@RequestParam Long userId) {
         Double total =  expenseService.getMonthlyTotal(userId);
         return new ResponseEntity<>(total,HttpStatus.OK);

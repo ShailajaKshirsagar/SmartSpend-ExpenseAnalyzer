@@ -14,4 +14,12 @@ public interface IncomeRepo extends JpaRepository<Income,Long> {
 
     @Query("SELECT i FROM Income i WHERE i.user.id =:userId")
     List<Income> findByUserId(@Param("userId") Long userId);
+
+    //Monthly total
+    @Query(""" 
+        SELECT COALESCE(SUM(i.amount), 0) FROM Income i WHERE i.user.id = :userId 
+        AND EXTRACT(MONTH FROM i.date) = :month
+        AND EXTRACT(YEAR FROM i.date) = :year
+        """)
+    Double getMonthlyTotal(@Param("userId") Long userId, @Param("month") int month, @Param("year") int year);
 }

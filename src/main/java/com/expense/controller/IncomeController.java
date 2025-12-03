@@ -30,4 +30,11 @@ public class IncomeController {
         List<IncomeResponseDto> income = incomeService.getIncome(userId);
         return new ResponseEntity<>(income,HttpStatus.OK);
     }
+
+    //get monthly income summary api
+    @GetMapping("/getMonthly-Incometotal")
+    public ResponseEntity<Double> getMonthlyTotal(@RequestParam Long userId){
+        Double total = incomeService.getMonthlyTotal(userId);
+        return new ResponseEntity<>(total,HttpStatus.OK);
+    }
 }
