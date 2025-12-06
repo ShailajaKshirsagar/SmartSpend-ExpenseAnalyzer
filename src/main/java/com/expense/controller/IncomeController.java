@@ -18,21 +18,21 @@ public class IncomeController {
     private IncomeService incomeService;
 
     //add income
-    @PostMapping("/addIncome")
+    @PostMapping("/add-income")
     public ResponseEntity<String> createIncome(@RequestParam Long userId, @RequestBody IncomeRequestDto dto) {
         String msg = incomeService.createIncome(userId, dto);
         return new ResponseEntity<>(msg, HttpStatus.CREATED);
     }
 
     //get income
-    @GetMapping("/getIncome")
+    @GetMapping("/get-income")
     public ResponseEntity<List<IncomeResponseDto>> getIncome(@RequestParam Long userId) {
         List<IncomeResponseDto> income = incomeService.getIncome(userId);
         return new ResponseEntity<>(income,HttpStatus.OK);
     }
 
     //get monthly income summary api
-    @GetMapping("/getMonthly-Incometotal")
+    @GetMapping("/get-monthly-incometotal")
     public ResponseEntity<Double> getMonthlyTotal(@RequestParam Long userId){
         Double total = incomeService.getMonthlyTotal(userId);
         return new ResponseEntity<>(total,HttpStatus.OK);

@@ -20,21 +20,21 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     //add expense
-    @PostMapping("/addExpense")
+    @PostMapping("/add-expense")
     public ResponseEntity<String> addExpense(@RequestBody ExpenseRequest req){
         String res = expenseService.addExpense(req);
         return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
 
     //get all expense
-    @GetMapping("/getAllExpenses")
+    @GetMapping("/get-all-expenses")
     public ResponseEntity<List<ExpenseResponseDto>> getAllExpenses(@RequestParam Long userId){
         List<ExpenseResponseDto> expenses = expenseService.getAllExpenses(userId);
         return new ResponseEntity<>(expenses,HttpStatus.OK);
     }
 
     //get expense by date
-    @GetMapping("/getExpenseBy-Date")
+    @GetMapping("/getexpenseby-date")
     public ResponseEntity<List<ExpenseResponseDto>> getExpenseByDate
     (@RequestParam Long userId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
 
@@ -43,7 +43,7 @@ public class ExpenseController {
     }
 
     //get expense by category
-    @GetMapping("/getExpenseBy-Category")
+    @GetMapping("/getexpenseby-category")
     public ResponseEntity<List<ExpenseResponseDto>> getByCategory(
             @RequestParam Long userId,
             @RequestParam String category) {
@@ -52,28 +52,28 @@ public class ExpenseController {
     }
 
     //expense by month
-    @GetMapping("/getExpenseBy-Month")
+    @GetMapping("/get-expenseby-month")
     public ResponseEntity<List<ExpenseResponseDto>> getByMonth(@RequestParam Long userId, @RequestParam int month, @RequestParam int year) {
         List<ExpenseResponseDto> expenses = expenseService.getExpenseByMonth(userId,month,year);
         return new ResponseEntity<>(expenses,HttpStatus.OK);
     }
 
     //today's expense
-    @GetMapping("/today's-Expense")
+    @GetMapping("/today's-expense")
     public ResponseEntity<List<ExpenseResponseDto>> getToday(@RequestParam Long userId) {
         List<ExpenseResponseDto> expenses=  expenseService.getTodaysExpenses(userId);
         return new ResponseEntity<>(expenses,HttpStatus.OK);
     }
 
     //monthly total
-    @GetMapping("/getMonthly-Expensetotal")
+    @GetMapping("/get-monthly-expensetotal")
     public ResponseEntity<Double> getMonthlyTotal(@RequestParam Long userId) {
         Double total =  expenseService.getMonthlyTotal(userId);
         return new ResponseEntity<>(total,HttpStatus.OK);
     }
 
     //get recent expenses/transactions
-    @GetMapping("/recentExpense")
+    @GetMapping("/recent-expense")
     public ResponseEntity<List<ExpenseResponseDto>> getRecentExpenses(@RequestParam Long userId,@RequestParam(defaultValue = "10") int limit) {
         List<ExpenseResponseDto> expenses = expenseService.getRecentExpenses(userId, limit);
         return new ResponseEntity<>(expenses,HttpStatus.OK);
