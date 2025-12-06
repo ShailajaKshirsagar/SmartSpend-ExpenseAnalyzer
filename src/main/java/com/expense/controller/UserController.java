@@ -3,11 +3,10 @@ package com.expense.controller;
 import com.expense.dtos.LoginRequest;
 import com.expense.dtos.RegisterUserRequest;
 import com.expense.dtos.otp.SendOtpRequest;
-import com.expense.dtos.otp.VerifyOtpRequest;
-//import com.expense.service.OtpService;
+import com.expense.dtos.otp.VerifyEmailOtpRequest;
+import com.expense.dtos.otp.VerifyMobileOtpRequest;
 import com.expense.service.OtpService;
 import com.expense.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,4 +38,24 @@ public class UserController {
         return new ResponseEntity<>(msg,HttpStatus.OK);
     }
 
+    //send otp
+    @PostMapping("/send-otp")
+    public ResponseEntity<String> sendOtp(@RequestBody SendOtpRequest req) {
+        String msg = otpService.sendOtp(req);
+        return new ResponseEntity<>(msg,HttpStatus.OK);
+    }
+
+    //verify email otp
+    @PostMapping("/verify-email-otp")
+    public ResponseEntity<String> verifyEmailOtp(@RequestBody VerifyEmailOtpRequest req) {
+        String msg = otpService.verifyEmailOtp(req);
+        return new ResponseEntity<>(msg,HttpStatus.OK);
+    }
+
+    //verify mobile otp
+    @PostMapping("/verify-mobile-otp")
+    public ResponseEntity<String> verifyMobileOtp(@RequestBody VerifyMobileOtpRequest req) {
+        String msg =otpService.verifyMobileOtp(req);
+        return new ResponseEntity<>(msg,HttpStatus.OK);
+    }
 }

@@ -23,15 +23,13 @@ public class UserServiceImpl implements UserService
         if (userRepository.existsByEmail(req.getEmail())) {
             throw new EmailAlreadyExistException("Email is already registered");
         }
-
         User user = User.builder()
                 .name(req.getName())
                 .email(req.getEmail())
-                .mobno(req.getMobno())
-                .password(req.getPassword())   // plain password (as you said)
+                .mobile(req.getMobno())
+                .password(req.getPassword())
                 .createdAt(LocalDateTime.now())
                 .build();
-
         userRepository.save(user);
 
         return "User Registered Successfully";
@@ -42,12 +40,10 @@ public class UserServiceImpl implements UserService
         // Find user by email
         User user = userRepository.findByEmail(req.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
-
         // Check password
         if (!user.getPassword().equals(req.getPassword())) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
-
         return "Logged In successfully";
     }
 }
