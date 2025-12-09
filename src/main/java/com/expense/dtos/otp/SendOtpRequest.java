@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SendOtpRequest  {
     private String email;
-    private Long mobile;
+    private String mobile;
 }

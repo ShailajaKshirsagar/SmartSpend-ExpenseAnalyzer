@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class VerifyMobileOtpRequest {
-    private Long mobile;
+    private String mobile;
     private String otp;
 }
