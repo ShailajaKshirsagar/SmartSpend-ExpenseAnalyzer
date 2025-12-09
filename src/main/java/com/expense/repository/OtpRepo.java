@@ -13,6 +13,6 @@ public interface OtpRepo extends JpaRepository<Otp,Long> {
     @Query("SELECT o FROM Otp o WHERE o.email =:email ORDER BY o.createdAt DESC")
     List<Otp> findLatestEmailOtp(@Param("email") String email);
 
-    @Query("SELECT  o FROM Otp o WHERE o.mobile =:mobile ORDER BY o.createdAt DESC")
-    List<Otp> findLatestMobileOtp(@Param("mobile") Long mobile);
+    @Query("SELECT o FROM Otp o WHERE o.mobile =:mobile ORDER BY o.createdAt DESC")
+    List<Otp> findLatestMobileOtp(@Param("mobile") String mobile);
 }

@@ -11,7 +11,10 @@ import com.expense.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,13 +38,13 @@ public class OtpServiceImpl implements OtpService {
     public String sendOtp(SendOtpRequest req) {
 
         Optional<User> user = Optional.empty();
-       if(req.getEmail()!=null){
-           user = userRepository.findByEmail(req.getEmail());
-       }
-       else if(req.getMobile()!=null){
-           user = userRepository.findByMobile(req.getMobile());
-       }
-       if(user.isEmpty()){
+        if (req.getEmail() != null && !req.getEmail().isBlank()) {
+            user = userRepository.findByEmail(req.getEmail());
+        }
+        else if (req.getMobile() != null && !req.getMobile().isBlank()) {
+            user = userRepository.findByMobile(req.getMobile());
+        }
+        if(user.isEmpty()){
            throw new RuntimeException("User not found. Register First!!");
        }
        String otp = generateOtp();
@@ -50,7 +53,7 @@ public class OtpServiceImpl implements OtpService {
                 .email(req.getEmail())
                 .mobile(req.getMobile())
                 .otpHash(hashedotp)
-                .createdAt(LocalDate.now()).build();
+                .createdAt(LocalDateTime.now()).build();
         otpRepository.save(otpmap);
         return "OTP Sent Successfully!!" + "Your OTP is --> " + otp;
         //returning otp for testing purpose only because it is hashed in db and hashedotp is only for db
@@ -68,7 +71,13 @@ public class OtpServiceImpl implements OtpService {
         if(otpList.isEmpty()){
             throw new RuntimeException("No OTP Found!!");
         }
+
         Otp emailOtp = otpList.get(0);
+        // time limit
+        long seconds = Duration.between(emailOtp.getCreatedAt(), LocalDateTime.now()).getSeconds();
+        if (seconds > 60) {
+            throw new RuntimeException("OTP expired! Try again.");
+        }
         if(!passwordEncoder.matches(req.getOtp(),emailOtp.getOtpHash())){
             throw new RuntimeException("Invalid Otp!!");
         }
@@ -78,17 +87,21 @@ public class OtpServiceImpl implements OtpService {
     @Override
     public String verifyMobileOtp(VerifyMobileOtpRequest req) {
         Optional<User> user = userRepository.findByMobile(req.getMobile());
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             throw new RuntimeException("User not found!!");
         }
         List<Otp> otpList = otpRepository.findLatestMobileOtp(req.getMobile());
-        if(otpList.isEmpty()){
+        if (otpList.isEmpty()) {
             throw new RuntimeException("No OTP Found!!");
         }
         Otp mobileOtp = otpList.get(0);
-        if(!passwordEncoder.matches(req.getOtp(),mobileOtp.getOtpHash())) {
+        long seconds = Duration.between(mobileOtp.getCreatedAt(), LocalDateTime.now()).getSeconds();
+        if (seconds > 60) {
+            throw new RuntimeException("OTP Expired! Try again");
+        }
+        if (!passwordEncoder.matches(req.getOtp(), mobileOtp.getOtpHash())) {
             throw new RuntimeException("Invalid Otp!!");
         }
-        return "Mobile Number Verified SuccessFully!!";
+        return "Mobile Number Verified Successfully!!";
     }
 }

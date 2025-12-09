@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Setter
@@ -19,7 +20,7 @@ public class Otp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;       //for email OTP
-    private Long mobile;        //for mobile OTP
+    private String mobile;        //for mobile OTP
     private String otpHash;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 }

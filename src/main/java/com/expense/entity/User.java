@@ -26,7 +26,7 @@ public class User {
 
     private String password;    // store hashed later for security
 
-    private Long mobile;
+    private String mobile;
 
 //    @Column(unique = true)
 //    private String deviceId;    // optional device-based login /for syncing with backend server

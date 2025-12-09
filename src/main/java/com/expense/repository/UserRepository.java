@@ -26,5 +26,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     //to find user by mobile
     @Query("SELECT u FROM User u WHERE u.mobile =:mobile")
-    Optional<User> findByMobile(@Param("mobile") Long mobile);
+    Optional<User> findByMobile(@Param("mobile") String mobile);
 }
