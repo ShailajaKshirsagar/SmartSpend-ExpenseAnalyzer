@@ -4,6 +4,7 @@ import com.expense.dtos.ExpenseResponseDto;
 import com.expense.dtos.insights.CategorySummaryDto;
 import com.expense.entity.Expense;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -48,7 +49,7 @@ public interface ExpenseRepo extends JpaRepository<Expense,Long> {
 
         //recent transactions/expeses
         @Query("SELECT e FROM Expense e WHERE e.user.id =:userId ORDER BY e.date DESC")
-        List<Expense> findRecentExpenses(Long userId, Pageable pageable);
+        Page<Expense> findRecentExpenses(@Param("userId") Long userId, Pageable pageable);
 
         //Total spent per category --> categorysummary
         @Query(""" 
@@ -75,5 +76,6 @@ public interface ExpenseRepo extends JpaRepository<Expense,Long> {
         List<CategorySummaryDto> getRangeCategorySummary(@Param("userId") Long userId, @Param("fromDate") LocalDate fromDate,
                 @Param("toDate") LocalDate toDate
         );
-        
+
+
 }

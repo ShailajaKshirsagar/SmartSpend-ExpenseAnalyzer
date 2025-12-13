@@ -1,6 +1,9 @@
 package com.expense.repository;
 
+import com.expense.entity.Expense;
 import com.expense.entity.Income;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +25,8 @@ public interface IncomeRepo extends JpaRepository<Income,Long> {
         AND EXTRACT(YEAR FROM i.date) = :year
         """)
     Double getMonthlyTotal(@Param("userId") Long userId, @Param("month") int month, @Param("year") int year);
+
+    //recent transactions/expeses
+    @Query("SELECT i FROM Income i WHERE i.user.id =:userId ORDER BY i.date DESC")
+    Page<Income> findRecentIncome(@Param("userId") Long userId, Pageable pageable);
 }

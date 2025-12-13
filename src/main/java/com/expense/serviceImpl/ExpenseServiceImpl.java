@@ -9,6 +9,7 @@ import com.expense.repository.UserRepository;
 import com.expense.service.ExpenseService;
 import com.expense.service.MonthlyBudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -121,7 +122,7 @@ public class ExpenseServiceImpl implements ExpenseService
     @Override
     public List<ExpenseResponseDto> getRecentExpenses(Long userId, int limit) {
         if (limit <= 0) limit = 10;
-        List<Expense> expenses = expenseRepository.findRecentExpenses(userId, PageRequest.of(0, limit));
+        Page<Expense> expenses = expenseRepository.findRecentExpenses(userId, PageRequest.of(0, limit));
         return  expenses.stream()
                 .map(expense -> new ExpenseResponseDto(
                         expense.getTitle(),
