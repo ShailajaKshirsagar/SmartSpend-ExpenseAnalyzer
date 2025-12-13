@@ -7,6 +7,7 @@ import com.expense.entity.User;
 import com.expense.repository.ExpenseRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.ExpenseService;
+import com.expense.service.MonthlyBudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class ExpenseServiceImpl implements ExpenseService
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    MonthlyBudgetService monthlyBudgetService;
+
     @Override
     public String addExpense(ExpenseRequest req) {
         User user = userRepository.findById(req.getUserId())
@@ -34,7 +38,9 @@ public class ExpenseServiceImpl implements ExpenseService
                 .category(req.getCategory().toLowerCase())
                 .user(user)
                 .build();
-        expenseRepository.save(exp);
+        Expense saved = expenseRepository.save(exp);
+        //to update budget
+        monthlyBudgetService.updateSpentAmount(req.getUserId(), saved.getAmount(), saved.getDate());
         return "Expense Added Successfully";
     }
 

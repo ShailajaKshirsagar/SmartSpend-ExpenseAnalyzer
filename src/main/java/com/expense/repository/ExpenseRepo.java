@@ -75,6 +75,5 @@ public interface ExpenseRepo extends JpaRepository<Expense,Long> {
         List<CategorySummaryDto> getRangeCategorySummary(@Param("userId") Long userId, @Param("fromDate") LocalDate fromDate,
                 @Param("toDate") LocalDate toDate
         );
-
-
+        
 }
