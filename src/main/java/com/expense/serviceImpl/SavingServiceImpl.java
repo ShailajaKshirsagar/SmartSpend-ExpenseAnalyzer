@@ -1,15 +1,10 @@
 package com.expense.serviceImpl;
 
-import com.expense.dtos.budget_savings.MonthlySavingResponseDto;
-import com.expense.dtos.budget_savings.SavingGoalRequestDto;
-import com.expense.dtos.budget_savings.SavingGoalResponseDto;
-import com.expense.dtos.budget_savings.SavingRequestDto;
+import com.expense.dtos.budget_savings.*;
 import com.expense.entity.SavingGoal;
 import com.expense.entity.SavingTransaction;
 import com.expense.entity.User;
-import com.expense.repository.SavingGoalRepo;
-import com.expense.repository.SavingTransactionRepo;
-import com.expense.repository.UserRepository;
+import com.expense.repository.*;
 import com.expense.service.SavingService;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SavingServiceImpl implements SavingService {
@@ -27,6 +24,12 @@ public class SavingServiceImpl implements SavingService {
     SavingGoalRepo savingGoalRepo;
     @Autowired
     SavingTransactionRepo savingTransactionRepo;
+    @Autowired
+    IncomeRepo incomeRepo;
+    @Autowired
+    ExpenseRepo expenseRepo;
+    @Autowired
+    MonthlyBudgetRepo monthlyBudgetRepo;
 
     @Override
     public @Nullable SavingGoalResponseDto createGoal(SavingGoalRequestDto dto) {
@@ -87,7 +90,6 @@ public class SavingServiceImpl implements SavingService {
         return calculateMonthlySavings(userId, previousMonth);
     }
 
-
     private MonthlySavingResponseDto calculateMonthlySavings(Long userId, YearMonth ym) {
 
         LocalDate start = ym.atDay(1);
@@ -104,5 +106,33 @@ public class SavingServiceImpl implements SavingService {
                 .year(ym.getYear())
                 .totalSaved(total)
                 .build();
+    }
+
+    //suggestions
+    @Override
+    public List<SmartSuggestionDto> getSuggestions(Long userId) {
+
+        List<SmartSuggestionDto> suggestions = new ArrayList<>();
+
+        int month = LocalDate.now().getMonthValue();
+        int year = LocalDate.now().getYear();
+
+
+        double income =
+                incomeRepo.getMonthlyTotal(userId, month, year);
+
+        double expense =
+                expenseRepo.getMonthlyTotal(userId, month, year);
+
+        if (income > 0 && expense < income * 0.6) {
+            suggestions.add(
+                    new SmartSuggestionDto("You are doing great! You can save more this month!!"));
+        }
+
+        if (expense > income * 0.9) {
+            suggestions.add(
+                    new SmartSuggestionDto("Your expenses are high this month. Try reducing non-essential spending."));
+        }
+        return suggestions;
     }
 }
