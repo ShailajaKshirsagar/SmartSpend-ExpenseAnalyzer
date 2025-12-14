@@ -38,13 +38,6 @@ public class UserController {
         return new ResponseEntity<>(msg,HttpStatus.OK);
     }
 
-    //send otp
-    @PostMapping("/send-otp")
-    public ResponseEntity<String> sendOtp(@RequestBody SendOtpRequest req) {
-        String msg = otpService.sendOtp(req);
-        return new ResponseEntity<>(msg,HttpStatus.OK);
-    }
-
     //verify email otp
     @PostMapping("/verify-email-otp")
     public ResponseEntity<String> verifyEmailOtp(@RequestBody VerifyEmailOtpRequest req) {

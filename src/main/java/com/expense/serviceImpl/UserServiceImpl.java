@@ -2,10 +2,12 @@ package com.expense.serviceImpl;
 
 import com.expense.dtos.LoginRequest;
 import com.expense.dtos.RegisterUserRequest;
+import com.expense.dtos.otp.SendOtpRequest;
 import com.expense.entity.User;
 import com.expense.exception.EmailAlreadyExistException;
 import com.expense.exception.InvalidCredentialsException;
 import com.expense.repository.UserRepository;
+import com.expense.service.OtpService;
 import com.expense.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class UserServiceImpl implements UserService
 {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    OtpService otpService;
 
     @Override
     public String register(RegisterUserRequest req) {
@@ -32,7 +37,15 @@ public class UserServiceImpl implements UserService
                 .build();
         userRepository.save(user);
 
-        return "User Registered Successfully";
+        //sends otp automatically
+        SendOtpRequest otpRequest = SendOtpRequest.builder()
+                .email(user.getEmail())
+                .mobile(user.getMobile())
+                .build();
+
+        otpService.sendOtp(otpRequest);
+
+        return "User registered successfully! OTP sent to Email and Mobile.";
 }
 
     @Override
