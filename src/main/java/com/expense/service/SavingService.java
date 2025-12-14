@@ -1,10 +1,9 @@
 package com.expense.service;
 
-import com.expense.dtos.budget_savings.MonthlySavingResponseDto;
-import com.expense.dtos.budget_savings.SavingGoalRequestDto;
-import com.expense.dtos.budget_savings.SavingGoalResponseDto;
-import com.expense.dtos.budget_savings.SavingRequestDto;
+import com.expense.dtos.budget_savings.*;
 import org.jspecify.annotations.Nullable;
+
+import java.util.List;
 
 public interface SavingService {
     String addSaving(SavingRequestDto dto);
@@ -14,4 +13,7 @@ public interface SavingService {
     MonthlySavingResponseDto getThisMonthSavings(Long userId);
 
     MonthlySavingResponseDto getPastMonthSavings(Long userId);
+
+    //suggestions
+    List<SmartSuggestionDto> getSuggestions(Long userId);
 }

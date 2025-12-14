@@ -1,15 +1,13 @@
 package com.expense.controller;
 
-import com.expense.dtos.budget_savings.MonthlySavingResponseDto;
-import com.expense.dtos.budget_savings.SavingGoalRequestDto;
-import com.expense.dtos.budget_savings.SavingGoalResponseDto;
-import com.expense.dtos.budget_savings.SavingRequestDto;
+import com.expense.dtos.budget_savings.*;
 import com.expense.service.SavingService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/savings")
@@ -38,5 +36,11 @@ public class SavingController {
     @GetMapping("/past-month-savings/{userId}")
     public MonthlySavingResponseDto pastMonthSavings(@PathVariable Long userId) {
         return savingService.getPastMonthSavings(userId);
+    }
+
+    //suggestions
+    @GetMapping("/get-suggestions")
+    public ResponseEntity<List<SmartSuggestionDto>> getSuggestions(@RequestParam Long userId){
+        return new ResponseEntity<>(savingService.getSuggestions(userId),HttpStatus.OK);
     }
 }
