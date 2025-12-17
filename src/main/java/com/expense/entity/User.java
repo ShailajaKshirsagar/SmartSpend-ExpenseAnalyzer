@@ -32,4 +32,7 @@ public class User {
 //    private String deviceId;    // optional device-based login /for syncing with backend server
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    private boolean emailVerified = false;
+
 }
