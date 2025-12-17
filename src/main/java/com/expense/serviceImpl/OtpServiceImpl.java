@@ -9,6 +9,7 @@ import com.expense.repository.OtpRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.OtpService;
 import com.expense.service.email.EmailService;
+import com.expense.service.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,9 @@ public class OtpServiceImpl implements OtpService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    SmsService smsService;
+
     private String generateOtp(){
         return  String.valueOf((int)(Math.random() * 900000) + 100000);
     }
@@ -45,13 +49,17 @@ public class OtpServiceImpl implements OtpService {
         if (req.getEmail() != null && !req.getEmail().isBlank()) {
             user = userRepository.findByEmail(req.getEmail());
         }
+        if (req.getEmail() != null && user.get().isEmailVerified()) {
+            throw new RuntimeException("Email already verified");
+        }
         else if (req.getMobile() != null && !req.getMobile().isBlank()) {
             user = userRepository.findByMobile(req.getMobile());
         }
         if(user.isEmpty()){
            throw new RuntimeException("User not found. Register First!!");
        }
-       String otp = generateOtp();
+
+        String otp = generateOtp();
        String hashedotp = passwordEncoder.encode(otp);
         Otp otpmap = Otp.builder()
                 .email(req.getEmail())
@@ -89,9 +97,13 @@ public class OtpServiceImpl implements OtpService {
         if (seconds > 180) {
             throw new RuntimeException("OTP expired! Try again.");
         }
-        if(!passwordEncoder.matches(req.getOtp(),emailOtp.getOtpHash())){
-            throw new RuntimeException("Invalid Otp!!");
+        if (!passwordEncoder.matches(req.getOtp(), emailOtp.getOtpHash())) {
+            throw new RuntimeException("Invalid OTP!!");
         }
+        User userEntity = user.get();
+        userEntity.setEmailVerified(true);
+        userRepository.save(userEntity);
+
         return "Email Verified Successfully!!";
     }
 
