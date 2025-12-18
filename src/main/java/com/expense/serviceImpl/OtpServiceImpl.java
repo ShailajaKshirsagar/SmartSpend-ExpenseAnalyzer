@@ -49,7 +49,7 @@ public class OtpServiceImpl implements OtpService {
         if (req.getEmail() != null && !req.getEmail().isBlank()) {
             user = userRepository.findByEmail(req.getEmail());
         }
-        if (req.getEmail() != null && user.get().isEmailVerified()) {
+        if (req.getEmail() != null && user.get().getEmailVerified()) {
             throw new RuntimeException("Email already verified");
         }
         else if (req.getMobile() != null && !req.getMobile().isBlank()) {
