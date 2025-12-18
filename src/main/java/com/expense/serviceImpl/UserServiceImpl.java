@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService
         if (!user.getPassword().equals(req.getPassword())) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
-        if (!user.isEmailVerified()) {
+        if (!user.getEmailVerified()) {
             throw new RuntimeException("Please verify your email before login");
         }
         return "Logged In successfully";

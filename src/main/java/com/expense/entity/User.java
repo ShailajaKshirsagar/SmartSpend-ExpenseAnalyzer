@@ -33,6 +33,7 @@ public class User {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    private boolean emailVerified = false;
+    @Column(name = "email_verified", nullable = false)
+    private Boolean emailVerified = false;
 
 }
