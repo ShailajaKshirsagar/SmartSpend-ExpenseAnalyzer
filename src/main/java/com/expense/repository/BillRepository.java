@@ -20,4 +20,14 @@ public interface BillRepository extends JpaRepository<Bill,Long> {
     //for overdue bills
     @Query("SELECT b FROM Bill b WHERE b.userId =:userId AND b.dueDate <:date AND b.isPaid =false")
     List<Bill> findByUserIdAndDueDateLessThanAndIsPaidFalse(@Param("userId") Long userId,@Param("date") LocalDate date);
+
+    //upcoming bill reminder 3 day
+    @Query("SELECT b FROM Bill b WHERE b.userId = :userId AND b.dueDate =:date AND b.isPaid = false")
+    List<Bill> findBillsFor3DayReminder(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+    //upcoming bill reminder 1 day
+    @Query("SELECT b FROM Bill b WHERE b.userId = :userId AND b.dueDate = :date AND b.isPaid = false")
+    List<Bill> findBillsFor1DayReminder(@Param("userId") Long userId, @Param("date") LocalDate date);
+
+
 }

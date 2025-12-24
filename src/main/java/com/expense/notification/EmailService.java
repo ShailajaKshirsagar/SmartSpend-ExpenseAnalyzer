@@ -1,6 +1,7 @@
-package com.expense.service.email;
+package com.expense.notification;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +12,9 @@ public class EmailService {
 
     @Autowired
     JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     @Async
     public void sendEmailOtp(String toEmail,String otp){
@@ -23,4 +27,15 @@ public class EmailService {
         javaMailSender.send(mailMessage);
         System.out.println("OTP sent to email: " + toEmail + " OTP: " + otp);
     }
+
+    public void sendEmail(String to, String subject , String body){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+
+        javaMailSender.send(message);
+    }
+
 }

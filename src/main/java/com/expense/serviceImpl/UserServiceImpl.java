@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService
                 .name(req.getName())
                 .email(req.getEmail())
                 .mobile(req.getMobno())
+                .emailVerified(false)
                 .password(req.getPassword())
                 .createdAt(LocalDateTime.now())
                 .build();
