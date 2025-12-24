@@ -5,11 +5,10 @@ import com.expense.dtos.otp.VerifyEmailOtpRequest;
 import com.expense.dtos.otp.VerifyMobileOtpRequest;
 import com.expense.entity.Otp;
 import com.expense.entity.User;
+import com.expense.notification.EmailService;
 import com.expense.repository.OtpRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.OtpService;
-import com.expense.service.email.EmailService;
-import com.expense.service.sms.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,9 +33,6 @@ public class OtpServiceImpl implements OtpService {
 
     @Autowired
     EmailService emailService;
-
-    @Autowired
-    SmsService smsService;
 
     private String generateOtp(){
         return  String.valueOf((int)(Math.random() * 900000) + 100000);
