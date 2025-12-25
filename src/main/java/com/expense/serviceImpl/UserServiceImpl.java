@@ -9,6 +9,7 @@ import com.expense.exception.InvalidCredentialsException;
 import com.expense.repository.UserRepository;
 import com.expense.service.OtpService;
 import com.expense.service.UserService;
+import com.expense.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class UserServiceImpl implements UserService
 
     @Autowired
     OtpService otpService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     public String register(RegisterUserRequest req) {
@@ -61,6 +65,7 @@ public class UserServiceImpl implements UserService
         if (!user.getEmailVerified()) {
             throw new RuntimeException("Please verify your email before login");
         }
-        return "Logged In successfully";
+        String token = jwtUtil.generateToken(user.getId(),user.getEmail());
+        return "Logged In successfully. Token --> " + token;
     }
 }
