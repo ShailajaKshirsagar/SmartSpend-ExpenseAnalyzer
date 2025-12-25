@@ -7,6 +7,8 @@ import com.expense.dtos.otp.VerifyEmailOtpRequest;
 import com.expense.dtos.otp.VerifyMobileOtpRequest;
 import com.expense.service.OtpService;
 import com.expense.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Public API'S ",
+description = "Public Endpoints for User Authentication and Authorization")
 @RestController
 @RequestMapping("/userauth")
 public class UserController {
@@ -26,12 +30,15 @@ public class UserController {
     private OtpService otpService;
 
     //Register user
+    @Operation(summary = "Create New user ")
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterUserRequest req){
         String msg = userService.register(req);
         return new ResponseEntity<>(msg, HttpStatus.CREATED);
     }
+
     //login user
+    @Operation(summary = "Login User ")
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest req){
         String msg = userService.loginuser(req);
