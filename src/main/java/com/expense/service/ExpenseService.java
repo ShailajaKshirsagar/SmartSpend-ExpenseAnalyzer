@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseService {
-    String addExpense(ExpenseRequest req);
+    String addExpense(ExpenseRequest req,Long userId);
 
     List<ExpenseResponseDto> getAllExpenses(Long userId);
 

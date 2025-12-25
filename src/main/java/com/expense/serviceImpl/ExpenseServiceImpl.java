@@ -29,8 +29,8 @@ public class ExpenseServiceImpl implements ExpenseService
     MonthlyBudgetService monthlyBudgetService;
 
     @Override
-    public String addExpense(ExpenseRequest req) {
-        User user = userRepository.findById(req.getUserId())
+    public String addExpense(ExpenseRequest req,Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Expense exp = Expense.builder()
                 .title(req.getTitle())
