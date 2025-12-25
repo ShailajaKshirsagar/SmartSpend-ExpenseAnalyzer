@@ -6,7 +6,7 @@ import com.expense.entity.Bill;
 import java.util.List;
 
 public interface BillService {
-    String addBill(Bill bill);
+    String addBill(Bill bill, Long userId);
 
     List<BillResponseDto> getUpcomingBills(Long userId);
 

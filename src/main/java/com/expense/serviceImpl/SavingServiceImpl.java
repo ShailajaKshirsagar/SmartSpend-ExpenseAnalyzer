@@ -32,9 +32,9 @@ public class SavingServiceImpl implements SavingService {
     MonthlyBudgetRepo monthlyBudgetRepo;
 
     @Override
-    public @Nullable SavingGoalResponseDto createGoal(SavingGoalRequestDto dto) {
-        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-
+    public @Nullable SavingGoalResponseDto createGoal(SavingGoalRequestDto dto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         SavingGoal goal = SavingGoal.builder()
                 .title(dto.getGoalName())
                 .targetAmount(dto.getTargetAmount())
@@ -57,9 +57,11 @@ public class SavingServiceImpl implements SavingService {
 
 
     @Override
-    public String addSaving(SavingRequestDto dto) {
-    User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new RuntimeException("User not found"));
-    SavingGoal goal = null;
+    public String addSaving(SavingRequestDto dto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        SavingGoal goal = null;
 
     if(dto.getGoalId()!=null){
         goal = savingGoalRepo.findById(dto.getGoalId())
@@ -113,22 +115,16 @@ public class SavingServiceImpl implements SavingService {
     public List<SmartSuggestionDto> getSuggestions(Long userId) {
 
         List<SmartSuggestionDto> suggestions = new ArrayList<>();
-
         int month = LocalDate.now().getMonthValue();
         int year = LocalDate.now().getYear();
-
-
         double income =
                 incomeRepo.getMonthlyTotal(userId, month, year);
-
         double expense =
                 expenseRepo.getMonthlyTotal(userId, month, year);
-
         if (income > 0 && expense < income * 0.6) {
             suggestions.add(
                     new SmartSuggestionDto("You are doing great! You can save more this month!!"));
         }
-
         if (expense > income * 0.9) {
             suggestions.add(
                     new SmartSuggestionDto("Your expenses are high this month. Try reducing non-essential spending."));
