@@ -27,8 +27,8 @@ public class CategoryBudgetServiceImpl implements CategoryBudgetService {
     CategoryRepo categoryRepo;
 
     @Override
-    public CategoryBudgetResponseDto setCategoryBudget(CategoryBudgetRequest req) {
-        User user = userRepository.findById(req.getUserId())
+    public CategoryBudgetResponseDto setCategoryBudget(CategoryBudgetRequest req, Long userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Category category = categoryRepo.findById(req.getCategoryId())

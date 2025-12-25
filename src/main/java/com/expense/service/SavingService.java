@@ -6,9 +6,9 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 
 public interface SavingService {
-    String addSaving(SavingRequestDto dto);
+    String addSaving(SavingRequestDto dto, Long userId);
 
-    @Nullable SavingGoalResponseDto createGoal(SavingGoalRequestDto dto);
+    @Nullable SavingGoalResponseDto createGoal(SavingGoalRequestDto dto, Long userId);
 
     MonthlySavingResponseDto getThisMonthSavings(Long userId);
 

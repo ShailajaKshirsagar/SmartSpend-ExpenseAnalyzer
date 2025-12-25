@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CategoryBudgetService {
 
-    CategoryBudgetResponseDto setCategoryBudget(CategoryBudgetRequest req);
+    CategoryBudgetResponseDto setCategoryBudget(CategoryBudgetRequest req, Long userId);
     void deductExpense(Long userId, Long categoryId, Double amount);
 
     List<CategoryBudgetResponseDto> getCategoryBudgets(Long userId);

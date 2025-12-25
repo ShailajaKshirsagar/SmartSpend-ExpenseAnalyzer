@@ -6,6 +6,7 @@ import com.expense.service.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,21 +20,24 @@ public class IncomeController {
 
     //add income
     @PostMapping("/add-income")
-    public ResponseEntity<String> createIncome(@RequestParam Long userId, @RequestBody IncomeRequestDto dto) {
+    public ResponseEntity<String> createIncome(@RequestBody IncomeRequestDto dto, Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
         String msg = incomeService.createIncome(userId, dto);
         return new ResponseEntity<>(msg, HttpStatus.CREATED);
     }
 
     //get income
     @GetMapping("/get-income")
-    public ResponseEntity<List<IncomeResponseDto>> getIncome(@RequestParam Long userId) {
+    public ResponseEntity<List<IncomeResponseDto>> getIncome(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
         List<IncomeResponseDto> income = incomeService.getIncome(userId);
         return new ResponseEntity<>(income,HttpStatus.OK);
     }
 
     //get monthly income summary api
     @GetMapping("/get-monthly-incometotal")
-    public ResponseEntity<Double> getMonthlyTotal(@RequestParam Long userId){
+    public ResponseEntity<Double> getMonthlyTotal(Authentication authentication){
+        Long userId = (Long) authentication.getPrincipal();
         Double total = incomeService.getMonthlyTotal(userId);
         return new ResponseEntity<>(total,HttpStatus.OK);
     }
