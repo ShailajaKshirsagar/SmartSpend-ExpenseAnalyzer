@@ -11,4 +11,5 @@ public class SmartSpendExpenseAnalyzerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SmartSpendExpenseAnalyzerApplication.class, args);
 	}
+	
 }
