@@ -3,6 +3,8 @@ package com.expense.serviceImpl;
 import com.expense.dtos.CategoryRequestDto;
 import com.expense.entity.Category;
 import com.expense.entity.User;
+import com.expense.exception.CategoryNotFound;
+import com.expense.exception.UserNotFoundException;
 import com.expense.repository.CategoryRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.CategoryService;
@@ -24,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public String saveCategory(Long userId, CategoryRequestDto dto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
         Category category = Category.builder()
                 .createdAt(LocalDate.now())
                 .name(dto.getName())
@@ -43,7 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public String deleteCategory(Long id, Long userId) {
         Category category = categoryRepository.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFound("Category not found"));
         categoryRepository.delete(category);
         return "";
     }
@@ -51,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public String updateCategory(Long id, Long userId, CategoryRequestDto dto) {
         Category category = categoryRepository.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFound("Category not found"));
         category.setName(dto.getName());
         category.setType(dto.getType());
         categoryRepository.save(category);

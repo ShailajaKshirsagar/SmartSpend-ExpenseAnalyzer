@@ -3,6 +3,7 @@ package com.expense.serviceImpl;
 import com.expense.dtos.otp.BillResponseDto;
 import com.expense.entity.Bill;
 import com.expense.entity.User;
+import com.expense.exception.UserNotFoundException;
 import com.expense.repository.BillRepository;
 import com.expense.repository.UserRepository;
 import com.expense.service.BillService;
@@ -22,7 +23,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public String addBill(Bill bill, Long userId) {
-        User user = userRepository.findById(bill.getUserId()).orElseThrow(()->  new RuntimeException("User not found"));
+        User user = userRepository.findById(bill.getUserId()).orElseThrow(()-> new UserNotFoundException("User Not Found"));
         billRepository.save(bill);
         return "Bill added";
     }

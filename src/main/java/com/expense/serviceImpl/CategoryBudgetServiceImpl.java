@@ -5,6 +5,8 @@ import com.expense.dtos.budget_savings.CategoryBudgetResponseDto;
 import com.expense.entity.Category;
 import com.expense.entity.CategoryBudget;
 import com.expense.entity.User;
+import com.expense.exception.CategoryNotFound;
+import com.expense.exception.UserNotFoundException;
 import com.expense.repository.CategoryBudgetRepo;
 import com.expense.repository.CategoryRepo;
 import com.expense.repository.UserRepository;
@@ -29,10 +31,10 @@ public class CategoryBudgetServiceImpl implements CategoryBudgetService {
     @Override
     public CategoryBudgetResponseDto setCategoryBudget(CategoryBudgetRequest req, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
 
         Category category = categoryRepo.findById(req.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new CategoryNotFound("Category not found"));
         LocalDate now = LocalDate.now();
         int month = now.getMonthValue();
         int year = now.getYear();
