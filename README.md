@@ -56,3 +56,9 @@ The backend is built using **Spring Boot**, and the frontend is developed using 
 - Public APIs restricted to authentication and verification only
 
 
+## API Documentation 
+<img width="923" height="872" alt="{58ACEC84-1462-4929-B45C-C61DD79220CD}" src="https://github.com/user-attachments/assets/6cd7f795-4413-49d3-8a47-e8912e1ff3d3" />
+
+
+
+
