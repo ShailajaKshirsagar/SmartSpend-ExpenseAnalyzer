@@ -4,6 +4,8 @@ import com.expense.dtos.budget_savings.*;
 import com.expense.entity.SavingGoal;
 import com.expense.entity.SavingTransaction;
 import com.expense.entity.User;
+import com.expense.exception.SavingGoalNotFound;
+import com.expense.exception.UserNotFoundException;
 import com.expense.repository.*;
 import com.expense.service.SavingService;
 import org.jspecify.annotations.Nullable;
@@ -34,7 +36,7 @@ public class SavingServiceImpl implements SavingService {
     @Override
     public @Nullable SavingGoalResponseDto createGoal(SavingGoalRequestDto dto, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
         SavingGoal goal = SavingGoal.builder()
                 .title(dto.getGoalName())
                 .targetAmount(dto.getTargetAmount())
@@ -59,13 +61,13 @@ public class SavingServiceImpl implements SavingService {
     @Override
     public String addSaving(SavingRequestDto dto, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
 
         SavingGoal goal = null;
 
     if(dto.getGoalId()!=null){
         goal = savingGoalRepo.findById(dto.getGoalId())
-                .orElseThrow(() -> new RuntimeException("Saving goal not found"));
+                .orElseThrow(() -> new SavingGoalNotFound("Saving goal not found"));
 
         goal.setSavedAmount(goal.getSavedAmount() + dto.getAmount());
         savingGoalRepo.save(goal);

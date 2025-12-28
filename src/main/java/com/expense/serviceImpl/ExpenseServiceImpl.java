@@ -4,6 +4,7 @@ import com.expense.dtos.ExpenseRequest;
 import com.expense.dtos.ExpenseResponseDto;
 import com.expense.entity.Expense;
 import com.expense.entity.User;
+import com.expense.exception.UserNotFoundException;
 import com.expense.repository.ExpenseRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.ExpenseService;
@@ -31,7 +32,7 @@ public class ExpenseServiceImpl implements ExpenseService
     @Override
     public String addExpense(ExpenseRequest req,Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
         Expense exp = Expense.builder()
                 .title(req.getTitle())
                 .amount(req.getAmount())

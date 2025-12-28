@@ -5,6 +5,7 @@ import com.expense.dtos.otp.VerifyEmailOtpRequest;
 import com.expense.dtos.otp.VerifyMobileOtpRequest;
 import com.expense.entity.Otp;
 import com.expense.entity.User;
+import com.expense.exception.UserNotFoundException;
 import com.expense.notification.EmailService;
 import com.expense.repository.OtpRepo;
 import com.expense.repository.UserRepository;
@@ -80,7 +81,7 @@ public class OtpServiceImpl implements OtpService {
     public String verifyEmailOtp(VerifyEmailOtpRequest req) {
         Optional<User> user = userRepository.findByEmail(req.getEmail());
         if(user.isEmpty()){
-            throw new RuntimeException("User not found!!");
+            throw new  UserNotFoundException("User Not Found");
         }
         List<Otp> otpList = otpRepository.findLatestEmailOtp(req.getEmail());
         if(otpList.isEmpty()){
@@ -107,7 +108,7 @@ public class OtpServiceImpl implements OtpService {
     public String verifyMobileOtp(VerifyMobileOtpRequest req) {
         Optional<User> user = userRepository.findByMobile(req.getMobile());
         if (user.isEmpty()) {
-            throw new RuntimeException("User not found!!");
+            throw  new UserNotFoundException("User Not Found");
         }
         List<Otp> otpList = otpRepository.findLatestMobileOtp(req.getMobile());
         if (otpList.isEmpty()) {

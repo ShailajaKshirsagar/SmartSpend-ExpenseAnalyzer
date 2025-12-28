@@ -5,6 +5,7 @@ import com.expense.dtos.IncomeRequestDto;
 import com.expense.dtos.IncomeResponseDto;
 import com.expense.entity.Income;
 import com.expense.entity.User;
+import com.expense.exception.UserNotFoundException;
 import com.expense.repository.IncomeRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.IncomeService;
@@ -25,7 +26,7 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Override
     public String createIncome(Long userId, IncomeRequestDto dto) {
-        User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(()->  new UserNotFoundException("User Not Found"));
         Income income = Income.builder()
                 .amount(dto.getAmount())
                 .date(LocalDate.now())

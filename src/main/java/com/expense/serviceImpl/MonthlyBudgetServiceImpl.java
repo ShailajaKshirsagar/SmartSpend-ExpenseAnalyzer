@@ -3,6 +3,8 @@ package com.expense.serviceImpl;
 import com.expense.dtos.budget_savings.BudgetDTO;
 import com.expense.entity.MonthlyBudget;
 import com.expense.entity.User;
+import com.expense.exception.BudgetNotSet;
+import com.expense.exception.UserNotFoundException;
 import com.expense.repository.MonthlyBudgetRepo;
 import com.expense.repository.UserRepository;
 import com.expense.service.MonthlyBudgetService;
@@ -23,7 +25,7 @@ public class MonthlyBudgetServiceImpl implements MonthlyBudgetService {
     //validate the user
     public User validateUser(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
     }
 
     @Override
@@ -50,7 +52,7 @@ public class MonthlyBudgetServiceImpl implements MonthlyBudgetService {
     public void updateSpentAmount(Long userId, Double amount, LocalDate date) {
         MonthlyBudget budget = monthlyBudgetRepository
                 .findByUserIdAndMonthAndYear(userId, date.getMonthValue(), date.getYear())
-                .orElseThrow(() -> new RuntimeException("Budget not set for this month"));
+                .orElseThrow(() -> new BudgetNotSet("Budget not set for this month"));
         //update spent and remaining amount
         budget.setSpentAmount(budget.getSpentAmount() + amount);
         budget.setRemainingAmount(budget.getTotalBudget() - budget.getSpentAmount());

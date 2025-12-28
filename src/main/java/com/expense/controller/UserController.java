@@ -5,6 +5,7 @@ import com.expense.dtos.RegisterUserRequest;
 import com.expense.dtos.otp.SendOtpRequest;
 import com.expense.dtos.otp.VerifyEmailOtpRequest;
 import com.expense.dtos.otp.VerifyMobileOtpRequest;
+import com.expense.exception.UserNotFoundException;
 import com.expense.service.OtpService;
 import com.expense.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,10 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Public API'S ",
 description = "Public Endpoints for User Authentication and Authorization")
@@ -58,4 +56,5 @@ public class UserController {
         String msg =otpService.verifyMobileOtp(req);
         return new ResponseEntity<>(msg,HttpStatus.OK);
     }
+
 }
