@@ -5,6 +5,7 @@ import com.expense.entity.User;
 import com.expense.notification.EmailService;
 import com.expense.repository.BillRepository;
 import com.expense.repository.UserRepository;
+import com.expense.utility.ResourcesLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class BillReminder {
 
     // Run daily at 9 AM
     @Scheduled(cron = "0 0 9 * * ?")
-   // @Scheduled(cron = "0 */1 * * * ?") // for testing every minute
+    //@Scheduled(cron = "0 */1 * * * ?") // for testing every minute
     public void sendBillEmailReminders() {
 
         //this console log -> testing
@@ -79,19 +80,9 @@ public class BillReminder {
     }
 
     private String buildUpcomingMail(Bill bill, String timeLeft) {
-        return """
-                Hello,
-                
-                Reminder: Your bill is due in %s.
-                
-                Bill Name : %s
-                Amount    : ₹%.2f
-                Due Date  : %s
-                
-                Please pay it on time.
-                
-                — Expense Analyzer
-                """.formatted(
+        String template = ResourcesLoader.load("email_templates/bill_upcoming.txt");
+        return
+        template.formatted(
                 timeLeft,
                 bill.getBillName(),
                 bill.getAmount(),
@@ -100,19 +91,9 @@ public class BillReminder {
     }
 
     private String buildOverdueMail(Bill bill, String overdueBy) {
-        return """
-                Hello,
-                
-                Your bill is overdue by %s.
-                
-                Bill Name : %s
-                Amount    : ₹%.2f
-                Due Date  : %s
-                
-                Please clear the payment immediately.
-                
-                — Expense Analyzer
-                """.formatted(
+        String template = ResourcesLoader.load("email_templates/bill_overdue.txt");
+        return
+        template.formatted(
                 overdueBy,
                 bill.getBillName(),
                 bill.getAmount(),

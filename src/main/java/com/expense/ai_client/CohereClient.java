@@ -1,5 +1,6 @@
 package com.expense.ai_client;
 
+import com.expense.utility.ResourcesLoader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -17,15 +18,9 @@ public class CohereClient {
 
     public String categorize(String text,String type) {
 
-        String prompt = """
-            You are a financial transaction categorizer.
-            Categories:
-            Food, Shopping, Travel, Bills, Healthcare, Education,
-            Salary, Refund, Entertainment, Subscription, Gifts,
-            Investment, PersonalCare, Other
-            Message: %s
-            Return ONLY one category.
-            """.formatted(text);
+        String promptTemplate = ResourcesLoader.load("ai_prompts/expense_categorization.txt");
+
+        String prompt = promptTemplate.formatted(text);
 
         // request body for Cohere Chat API
         Map<String, Object> body = Map.of(
