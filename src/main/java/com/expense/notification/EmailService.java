@@ -22,7 +22,7 @@ public class EmailService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
         mailMessage.setSubject("Expense Analyzer - Email OTP");
-        mailMessage.setText("Your OTP IS : " + otp + "\nThis OTP is valid for 3 minutes!");
+        mailMessage.setText("Your OTP IS : " + otp + "\nThis OTP is valid for 5 minutes!");
 
         javaMailSender.send(mailMessage);
         System.out.println("OTP sent to email: " + toEmail + " OTP: " + otp);

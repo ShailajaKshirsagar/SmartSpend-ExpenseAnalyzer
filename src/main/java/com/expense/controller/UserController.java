@@ -10,6 +10,7 @@ import com.expense.service.OtpService;
 import com.expense.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class UserController {
     //Register user
     @Operation(summary = "Create New user ")
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterUserRequest req){
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterUserRequest req){
         String msg = userService.register(req);
         return new ResponseEntity<>(msg, HttpStatus.CREATED);
     }
