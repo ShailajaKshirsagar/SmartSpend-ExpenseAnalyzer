@@ -1,5 +1,6 @@
 package com.expense.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -10,8 +11,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class ExpenseRequest {
+    @NotBlank(message = "Title or Name of Expense is required")
     private String title;
     private Double amount;
     private String category;
-    private Long userId;  // sent from frontend
+    private Long userId;
 }
