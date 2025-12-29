@@ -91,7 +91,7 @@ public class OtpServiceImpl implements OtpService {
         Otp emailOtp = otpList.get(0);
         // time limit
         long seconds = Duration.between(emailOtp.getCreatedAt(), LocalDateTime.now()).getSeconds();
-        if (seconds > 180) {
+        if (seconds > 300) {
             throw new RuntimeException("OTP expired! Try again.");
         }
         if (!passwordEncoder.matches(req.getOtp(), emailOtp.getOtpHash())) {

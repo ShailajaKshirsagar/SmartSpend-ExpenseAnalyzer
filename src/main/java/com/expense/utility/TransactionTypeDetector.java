@@ -14,11 +14,10 @@ public class TransactionTypeDetector {
         }
 
         // for income keywords
-        if (lower.contains("credited") || lower.contains("received") || lower.contains("refund")
-                || lower.contains("salary") || lower.contains("deposit")) {
+        if (lower.contains("credited") || lower.contains("received") || lower.contains("cashback") ||
+                lower.contains("refund") || lower.contains("salary") || lower.contains("deposit")) {
             return "INCOME";
         }
-
         return "EXPENSE";
     }
 }

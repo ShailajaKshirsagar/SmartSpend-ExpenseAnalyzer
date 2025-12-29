@@ -27,7 +27,7 @@ public class CohereClient {
             Return ONLY one category.
             """.formatted(text);
 
-        // Prepare request body for Cohere Chat API
+        // request body for Cohere Chat API
         Map<String, Object> body = Map.of(
                 "model", "command-r-plus-08-2024",
                     "message", prompt,
