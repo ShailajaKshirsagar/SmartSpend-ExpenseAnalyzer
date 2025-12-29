@@ -1,0 +1,19 @@
+Hello,
+
+We noticed that the following bill has been overdue for %s.
+To help you stay financially organized and avoid additional charges, please take action at the earliest.
+
+Bill Details
+Bill Name : %s
+Amount    : ₹%.2f
+Due Date  : %s
+
+We strongly recommend clearing this payment as soon as possible.
+Keeping bills up to date helps maintain a healthy financial record.
+
+If you have already made the payment, kindly disregard this email.
+
+Thank you for trusting SmartSpend Expense Analyzer with your expense tracking.
+
+Best regards,
+Expense Analyzer Team

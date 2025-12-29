@@ -1,0 +1,20 @@
+Hello,
+
+We hope you are doing well.
+
+This is a friendly reminder that one of your bills is due in %s.
+Please review the details below to avoid any late fees or service interruptions.
+
+Bill Details
+Bill Name : %s
+Amount    : ₹%.2f
+Due Date  : %s
+
+We recommend completing the payment before the due date to stay on track with your finances.
+
+If you have already paid this bill, please ignore this message.
+
+Thank you for using SmartSpend Expense Analyzer to manage your expenses efficiently.
+
+Warm regards,
+Expense Analyzer Team
