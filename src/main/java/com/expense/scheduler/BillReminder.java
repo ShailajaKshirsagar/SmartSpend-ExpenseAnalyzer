@@ -26,57 +26,55 @@ public class BillReminder {
     EmailService emailService;
 
     // Run daily at 9 AM
-    @Scheduled(cron = "0 0 9 * * ?")
-    //@Scheduled(cron = "0 */1 * * * ?") // for testing every minute
+    //@Scheduled(cron = "0 0 9 * * ?")
+    @Scheduled(cron = "0 */1 * * * ?") // for testing every minute
     public void sendBillEmailReminders() {
 
         //this console log -> testing
         System.out.println("bill Reminder Scheduler TRIGGERED at " + LocalDate.now());
 
         LocalDate today = LocalDate.now();
-        LocalDate threeDaysLater = today.plusDays(3); // Upcoming reminder 3 days before
-        LocalDate oneDayLater = today.plusDays(1);    // Upcoming reminder 1 day before
-        LocalDate oneDayAfter = today.minusDays(1); // Overdue reminder 1 day after
 
-        List<User> users = userRepository.findAll();
+        userRepository.findAll()
+                .forEach(user -> {
 
-        for (User user : users) {
-            Long userId = user.getId();
-            // 3 Days Before Due Date
-            List<Bill> bills3Days = billRepository.findBillsFor3DayReminder(userId, threeDaysLater);
-            for (Bill bill : bills3Days) {
-                emailService.sendEmail(
-                        user.getEmail(),
-                        "Bill Reminder – Due in 3 Days",
-                        buildUpcomingMail(bill, "3 days")
-                );
-                bill.setReminder3DaysSent(true);
-                billRepository.save(bill);
-            }
+                    Long userId = user.getId();
 
-            // 1 Day Before Due Date
-            List<Bill> bills1Day = billRepository.findBillsFor1DayReminder(userId, oneDayLater);
-            for (Bill bill : bills1Day) {
-                emailService.sendEmail(
-                        user.getEmail(),
-                        "Bill Reminder – Due Tomorrow",
-                        buildUpcomingMail(bill, "1 day")
-                );
-                bill.setReminder1DaySent(true);
-                billRepository.save(bill);
-            }
+                    billRepository.findBillsFor3DayReminder(userId, today.plusDays(3))
+                            .stream()
+                            .forEach(bill ->
+                                    sendEmailReminder(
+                                            user.getEmail(),
+                                            "Bill Reminder – Due in 3 Days",
+                                            buildUpcomingMail(bill, "3 days")
+                                    )
+                            );
 
-            List<Bill> overdueBills = billRepository.findByUserIdAndDueDateLessThanAndIsPaidFalse(userId, oneDayAfter);
-            for (Bill bill : overdueBills) {
-                emailService.sendEmail(
-                        user.getEmail(),
-                        "Overdue Bill Alert – 1 Day Late",
-                        buildOverdueMail(bill, "1 day")
-                );
-                bill.setOverdue1DaySent(true);
-                billRepository.save(bill);
-            }
-        }
+                    billRepository.findBillsFor1DayReminder(userId, today.plusDays(1))
+                            .stream()
+                            .forEach(bill ->
+                                    sendEmailReminder(
+                                            user.getEmail(),
+                                            "Bill Reminder – Due Tomorrow",
+                                            buildUpcomingMail(bill, "1 day")
+                                    )
+                            );
+
+                    billRepository.findByUserIdAndDueDateLessThanAndIsPaidFalse(
+                                    userId, today.minusDays(1))
+                            .stream()
+                            .forEach(bill ->
+                                    sendEmailReminder(
+                                            user.getEmail(),
+                                            "Overdue Bill Alert – 1 Day Late",
+                                            buildOverdueMail(bill, "1 day")
+                                    )
+                            );
+                });
+    }
+
+    private void sendEmailReminder(String to, String subject, String body) {
+        emailService.sendEmail(to, subject, body);
     }
 
     private String buildUpcomingMail(Bill bill, String timeLeft) {
