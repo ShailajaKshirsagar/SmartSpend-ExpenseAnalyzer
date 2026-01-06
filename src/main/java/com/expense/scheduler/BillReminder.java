@@ -26,8 +26,8 @@ public class BillReminder {
     EmailService emailService;
 
     // Run daily at 9 AM
-    //@Scheduled(cron = "0 0 9 * * ?")
-    @Scheduled(cron = "0 */1 * * * ?") // for testing every minute
+    @Scheduled(cron = "0 0 9 * * ?")
+    //@Scheduled(cron = "0 */1 * * * ?") // for testing every minute
     public void sendBillEmailReminders() {
 
         //this console log -> testing
