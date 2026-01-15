@@ -49,18 +49,13 @@ public class OtpServiceImpl implements OtpService {
         if (req.getEmail() != null && user.get().getEmailVerified()) {
             throw new RuntimeException("Email already verified");
         }
-        else if (req.getMobile() != null && !req.getMobile().isBlank()) {
-            user = userRepository.findByMobile(req.getMobile());
-        }
         if(user.isEmpty()){
            throw new RuntimeException("User not found. Register First!!");
        }
-
         String otp = generateOtp();
        String hashedotp = passwordEncoder.encode(otp);
         Otp otpmap = Otp.builder()
                 .email(req.getEmail())
-                .mobile(req.getMobile())
                 .otpHash(hashedotp)
                 .createdAt(LocalDateTime.now()).build();
         otpRepository.save(otpmap);
@@ -102,26 +97,5 @@ public class OtpServiceImpl implements OtpService {
         userRepository.save(userEntity);
 
         return "Email Verified Successfully!!";
-    }
-
-    @Override
-    public String verifyMobileOtp(VerifyMobileOtpRequest req) {
-        Optional<User> user = userRepository.findByMobile(req.getMobile());
-        if (user.isEmpty()) {
-            throw  new UserNotFoundException("User Not Found");
-        }
-        List<Otp> otpList = otpRepository.findLatestMobileOtp(req.getMobile());
-        if (otpList.isEmpty()) {
-            throw new RuntimeException("No OTP Found!!");
-        }
-        Otp mobileOtp = otpList.get(0);
-        long seconds = Duration.between(mobileOtp.getCreatedAt(), LocalDateTime.now()).getSeconds();
-        if (seconds > 180) {
-            throw new RuntimeException("OTP Expired! Try again");
-        }
-        if (!passwordEncoder.matches(req.getOtp(), mobileOtp.getOtpHash())) {
-            throw new RuntimeException("Invalid Otp!!");
-        }
-        return "Mobile Number Verified Successfully!!";
     }
 }

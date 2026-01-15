@@ -45,12 +45,11 @@ public class UserServiceImpl implements UserService
         //sends otp automatically
         SendOtpRequest otpRequest = SendOtpRequest.builder()
                 .email(user.getEmail())
-                .mobile(user.getMobile())
                 .build();
 
         otpService.sendOtp(otpRequest);
 
-        return "User registered successfully! OTP sent to Email and Mobile.";
+        return "User registered successfully! OTP sent to Email.";
 }
 
     @Override
