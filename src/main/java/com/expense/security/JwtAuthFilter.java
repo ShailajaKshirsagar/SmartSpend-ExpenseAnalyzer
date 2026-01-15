@@ -21,21 +21,40 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/userauth/")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui");
+    }
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+
         String authHeader = request.getHeader("Authorization");
 
-        if(authHeader!=null && authHeader.startsWith("Bearer")){
-            try{
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            try {
                 String token = authHeader.substring(7);
                 Long userId = jwtUtil.extractUserId(token);
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId,null, Collections.emptyList());
-                SecurityContextHolder.getContext().setAuthentication((authentication));
-            }catch (Exception e){
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userId, null, Collections.emptyList());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            } catch (Exception e) {
+                SecurityContextHolder.clearContext();
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
         }
-        filterChain.doFilter(request,response);
+
+        filterChain.doFilter(request, response);
     }
 }

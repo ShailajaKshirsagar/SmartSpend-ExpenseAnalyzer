@@ -32,10 +32,10 @@ public class UserController {
     @Operation(summary = "Create New user ")
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterUserRequest req){
+        System.out.println("Register Api Triggered!!");
         String msg = userService.register(req);
         return new ResponseEntity<>(msg, HttpStatus.CREATED);
     }
-
     //login user
     @Operation(summary = "Login User ")
     @PostMapping("/login")
@@ -48,13 +48,6 @@ public class UserController {
     @PostMapping("/verify-email-otp")
     public ResponseEntity<String> verifyEmailOtp(@RequestBody VerifyEmailOtpRequest req) {
         String msg = otpService.verifyEmailOtp(req);
-        return new ResponseEntity<>(msg,HttpStatus.OK);
-    }
-
-    //verify mobile otp
-    @PostMapping("/verify-mobile-otp")
-    public ResponseEntity<String> verifyMobileOtp(@RequestBody VerifyMobileOtpRequest req) {
-        String msg =otpService.verifyMobileOtp(req);
         return new ResponseEntity<>(msg,HttpStatus.OK);
     }
 
