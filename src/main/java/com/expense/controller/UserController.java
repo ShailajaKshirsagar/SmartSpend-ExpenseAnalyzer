@@ -51,4 +51,10 @@ public class UserController {
         return new ResponseEntity<>(msg,HttpStatus.OK);
     }
 
+    //resend otp api
+    @PostMapping("/resend-otp")
+    public ResponseEntity<String> resendEmailOtp(@RequestBody SendOtpRequest otpRequest){
+        String msg = otpService.sendOtp(otpRequest);
+        return new ResponseEntity<>(msg,HttpStatus.OK);
+    }
 }

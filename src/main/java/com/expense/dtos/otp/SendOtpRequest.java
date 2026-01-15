@@ -13,5 +13,4 @@ import lombok.NoArgsConstructor;
 public class SendOtpRequest  {
     @NotBlank(message = "Email is required")
     private String email;
-    private String mobile;
 }

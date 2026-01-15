@@ -10,6 +10,5 @@ public interface OtpService {
 
     String verifyEmailOtp(VerifyEmailOtpRequest req);
 
-    String verifyMobileOtp(VerifyMobileOtpRequest req);
 
 }
