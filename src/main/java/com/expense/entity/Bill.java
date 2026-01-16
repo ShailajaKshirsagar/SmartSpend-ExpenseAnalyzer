@@ -30,6 +30,4 @@ public class Bill {
     private Boolean reminder3DaysSent = false;   // 3 days before due date--> upcoming bills
     private Boolean reminder1DaySent = false;    // 1 day before due date
     private Boolean overdue1DaySent = false;     // 1 day after due date
-
-
 }
