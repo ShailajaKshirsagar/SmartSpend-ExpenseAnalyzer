@@ -4,8 +4,6 @@ import com.expense.dtos.LoginRequest;
 import com.expense.dtos.RegisterUserRequest;
 import com.expense.dtos.otp.SendOtpRequest;
 import com.expense.dtos.otp.VerifyEmailOtpRequest;
-import com.expense.dtos.otp.VerifyMobileOtpRequest;
-import com.expense.exception.UserNotFoundException;
 import com.expense.service.OtpService;
 import com.expense.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;

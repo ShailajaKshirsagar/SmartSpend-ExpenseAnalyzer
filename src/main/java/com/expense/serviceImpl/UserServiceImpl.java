@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService
             throw new RuntimeException("Please verify your email before login");
         }
         String token = jwtUtil.generateToken(user.getId(),user.getEmail());
+        System.out.println("Logged In Successfully!! " + token );
         return "Logged In successfully. Token --> " + token;
     }
 }
