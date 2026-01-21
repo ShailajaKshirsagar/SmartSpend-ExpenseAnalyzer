@@ -1,5 +1,7 @@
 package com.expense.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +22,7 @@ public class Bill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     private Long userId;
     private String billName;
@@ -27,7 +30,10 @@ public class Bill {
     private LocalDate dueDate;
     private Boolean isRecurring; //it can be true if it is recurring monthly
     private Boolean isPaid;
+    @JsonIgnore
     private Boolean reminder3DaysSent = false;   // 3 days before due date--> upcoming bills
+    @JsonIgnore
     private Boolean reminder1DaySent = false;    // 1 day before due date
+    @JsonIgnore
     private Boolean overdue1DaySent = false;     // 1 day after due date
 }
