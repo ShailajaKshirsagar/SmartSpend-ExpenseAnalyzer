@@ -23,7 +23,6 @@ public class SavingController {
         Long userId = (Long) authentication.getPrincipal();
         return ResponseEntity.ok(savingService.createGoal(dto,userId));
     }
-
     @PostMapping("/add-savings")
     public ResponseEntity<String> addSaving(@RequestBody SavingRequestDto dto,Authentication authentication) {
         Long userId = (Long) authentication.getPrincipal();

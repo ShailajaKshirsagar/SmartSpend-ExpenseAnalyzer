@@ -2,6 +2,7 @@ package com.expense.service;
 
 import com.expense.dtos.budget_savings.*;
 import org.jspecify.annotations.Nullable;
+import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface SavingService {
 
     //suggestions
     List<SmartSuggestionDto> getSuggestions(Long userId);
+
 }
