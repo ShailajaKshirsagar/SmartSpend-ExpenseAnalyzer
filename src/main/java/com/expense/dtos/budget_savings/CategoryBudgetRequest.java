@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CategoryBudgetRequest {
-    private Long userId;
-    private Long categoryId;
+    private String categoryName;   // user gives "Food"
     private Double limitAmount;
 }
+

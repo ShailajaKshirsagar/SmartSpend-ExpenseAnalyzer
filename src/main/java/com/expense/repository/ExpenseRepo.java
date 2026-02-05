@@ -77,5 +77,21 @@ public interface ExpenseRepo extends JpaRepository<Expense,Long> {
                 @Param("toDate") LocalDate toDate
         );
 
+        // Category-wise monthly total
+        @Query("""
+        select coalesce(sum(e.amount), 0)
+        from Expense e
+        where e.user.id = :userId
+        and lower(e.category) = lower(:category)
+        and extract(month from e.date) = :month
+        and extract(year from e.date) = :year
+        """)
+        double getCategoryMonthlyTotal(
+                Long userId,
+                String category,
+                int month,
+                int year
+        );
+
 
 }

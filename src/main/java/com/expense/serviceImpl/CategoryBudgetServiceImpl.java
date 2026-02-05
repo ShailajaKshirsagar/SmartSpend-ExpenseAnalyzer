@@ -30,17 +30,25 @@ public class CategoryBudgetServiceImpl implements CategoryBudgetService {
 
     @Override
     public CategoryBudgetResponseDto setCategoryBudget(CategoryBudgetRequest req, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
 
-        Category category = categoryRepo.findById(req.getCategoryId())
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
+        Category category = categoryRepo
+                .findByNameIgnoreCaseAndUserId(req.getCategoryName(), userId)
                 .orElseThrow(() -> new CategoryNotFound("Category not found"));
+
         LocalDate now = LocalDate.now();
         int month = now.getMonthValue();
         int year = now.getYear();
 
         CategoryBudget cb = categoryBudgetRepo
-                .findByUserIdAndCategoryIdAndMonthAndYear(user.getId(), category.getId(), month, year)
+                .findByUserIdAndCategoryIdAndMonthAndYear(
+                        user.getId(),
+                        category.getId(),
+                        month,
+                        year
+                )
                 .orElse(CategoryBudget.builder()
                         .user(user)
                         .category(category)
@@ -48,10 +56,12 @@ public class CategoryBudgetServiceImpl implements CategoryBudgetService {
                         .year(year)
                         .spentAmount(0.0)
                         .build());
+
         cb.setLimitAmount(req.getLimitAmount());
         categoryBudgetRepo.save(cb);
         return toDto(cb);
     }
+
 
     //to deduct expense
     @Override

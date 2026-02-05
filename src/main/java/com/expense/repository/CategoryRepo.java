@@ -19,4 +19,13 @@ public interface CategoryRepo extends JpaRepository<Category,Long> {
     @Query("SELECT c FROM Category c WHERE c.id =:id AND c.user.id =:userId")
     Optional<Category> findByIdAndUserId(@Param("id") Long id,@Param("userId") Long userId);
 
+    @Query("""
+    SELECT c FROM Category c
+    WHERE LOWER(c.name) = LOWER(:name)
+    AND c.user.id = :userId
+    """)
+    Optional<Category> findByNameIgnoreCaseAndUserId(
+            @Param("name") String name,
+            @Param("userId") Long userId
+    );
 }
