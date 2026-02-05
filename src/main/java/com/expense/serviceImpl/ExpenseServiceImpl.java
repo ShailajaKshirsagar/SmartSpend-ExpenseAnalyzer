@@ -5,8 +5,10 @@ import com.expense.dtos.ExpenseResponseDto;
 import com.expense.entity.Expense;
 import com.expense.entity.User;
 import com.expense.exception.UserNotFoundException;
+import com.expense.repository.CategoryRepo;
 import com.expense.repository.ExpenseRepo;
 import com.expense.repository.UserRepository;
+import com.expense.service.AlertService;
 import com.expense.service.ExpenseService;
 import com.expense.service.MonthlyBudgetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.springframework.data.util.ClassUtils.ifPresent;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService
@@ -28,6 +32,11 @@ public class ExpenseServiceImpl implements ExpenseService
 
     @Autowired
     MonthlyBudgetService monthlyBudgetService;
+    @Autowired
+    AlertService alertService;
+    @Autowired
+    CategoryRepo categoryRepo;
+
 
     @Override
     public String addExpense(ExpenseRequest req,Long userId) {
@@ -41,6 +50,12 @@ public class ExpenseServiceImpl implements ExpenseService
                 .user(user)
                 .build();
         Expense saved = expenseRepository.save(exp);
+        categoryRepo
+                .findByNameIgnoreCaseAndUserId(saved.getCategory(), userId)
+                .ifPresent(category -> {
+                    alertService.checkCategoryOverspend(userId, category.getId());
+                });
+        alertService.checkIncomeVsExpense(userId);
         //to update budget
         monthlyBudgetService.updateSpentAmount(req.getUserId(), saved.getAmount(), saved.getDate());
         return "Expense Added Successfully";

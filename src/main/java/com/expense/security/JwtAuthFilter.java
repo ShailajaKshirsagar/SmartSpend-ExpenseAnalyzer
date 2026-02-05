@@ -23,6 +23,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
+        // Allow unauthenticated access for login, swagger, etc.
         return path.startsWith("/userauth/")
                 || path.startsWith("/v3/api-docs")
                 || path.startsWith("/swagger-ui");
@@ -37,24 +38,33 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            try {
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
+
+                // Extract user ID from JWT (should return Long)
                 Long userId = jwtUtil.extractUserId(token);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userId, null, Collections.emptyList());
+                if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    // Set the user ID as principal
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userId,
+                                    null,
+                                    Collections.emptyList() // no roles for now
+                            );
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            } catch (Exception e) {
-                SecurityContextHolder.clearContext();
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
+        } catch (Exception e) {
+            // Invalid token, clear context and return 401
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
 
+        // Continue filter chain
         filterChain.doFilter(request, response);
     }
 }

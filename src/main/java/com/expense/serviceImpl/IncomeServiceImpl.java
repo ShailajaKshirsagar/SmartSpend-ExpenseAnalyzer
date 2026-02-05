@@ -8,6 +8,7 @@ import com.expense.entity.User;
 import com.expense.exception.UserNotFoundException;
 import com.expense.repository.IncomeRepo;
 import com.expense.repository.UserRepository;
+import com.expense.service.AlertService;
 import com.expense.service.IncomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,8 @@ public class IncomeServiceImpl implements IncomeService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AlertService alertService;
 
     @Override
     public String createIncome(Long userId, IncomeRequestDto dto) {
@@ -34,6 +37,7 @@ public class IncomeServiceImpl implements IncomeService {
                 .notes(dto.getNotes())
                 .user(user).build();
         incomeRepository.save(income);
+        alertService.checkIncomeVsExpense(userId);
         return "Income Saved Successfully";
     }
 
