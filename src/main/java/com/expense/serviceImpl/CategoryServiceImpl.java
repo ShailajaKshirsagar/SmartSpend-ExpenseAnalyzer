@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new CategoryNotFound("Category not found"));
         categoryRepository.delete(category);
-        return "";
+        return "Category deleted";
     }
 
     @Override

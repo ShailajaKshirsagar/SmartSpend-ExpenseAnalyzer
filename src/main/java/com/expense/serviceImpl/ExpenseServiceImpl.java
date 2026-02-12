@@ -50,14 +50,14 @@ public class ExpenseServiceImpl implements ExpenseService
                 .user(user)
                 .build();
         Expense saved = expenseRepository.save(exp);
+        monthlyBudgetService.updateSpentAmount(req.getUserId(), saved.getAmount(), saved.getDate());
         categoryRepo
                 .findByNameIgnoreCaseAndUserId(saved.getCategory(), userId)
                 .ifPresent(category -> {
                     alertService.checkCategoryOverspend(userId, category.getId());
                 });
         alertService.checkIncomeVsExpense(userId);
-        //to update budget
-        monthlyBudgetService.updateSpentAmount(req.getUserId(), saved.getAmount(), saved.getDate());
+        alertService.checkMonthlyBudgetOverspend(userId);
         return "Expense Added Successfully";
     }
 

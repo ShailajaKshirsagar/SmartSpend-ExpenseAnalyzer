@@ -13,4 +13,7 @@ public interface AlertService {
     List<AlertResponseDto> getUnreadAlerts(Long userId);
 
     void markAlertAsRead(Long alertId, Long userId);
+
+    //
+    void checkMonthlyBudgetOverspend(Long userId);
 }
