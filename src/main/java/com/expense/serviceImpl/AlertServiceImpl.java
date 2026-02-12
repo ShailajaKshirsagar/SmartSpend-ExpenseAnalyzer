@@ -28,6 +28,8 @@ public class AlertServiceImpl implements AlertService{
     IncomeRepo incomeRepo;
     @Autowired
     AlertRepository alertRepo;
+    @Autowired
+    MonthlyBudgetRepo monthlyBudgetRepo;
     @Override
     public void checkCategoryOverspend(Long userId, Long categoryId) {
 
@@ -140,5 +142,45 @@ public class AlertServiceImpl implements AlertService{
         }
         alert.setReadStatus(true);
         alertRepo.save(alert);
+    }
+
+    //for monthly budget
+    @Override
+    public void checkMonthlyBudgetOverspend(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        int month = LocalDate.now().getMonthValue();
+        int year = LocalDate.now().getYear();
+        MonthlyBudget monthlyBudget = monthlyBudgetRepo
+                .findByUserIdAndMonthAndYear(userId, month, year)
+                .orElse(null);
+        if (monthlyBudget == null) return;
+        double remainingAmount = monthlyBudget.getRemainingAmount();
+
+        if (remainingAmount < 0) {
+            double overSpent = Math.abs(remainingAmount);
+            boolean alreadyExists =
+                    alertRepo.findByUserIdAndTypeAndMonthAndYear(
+                            userId,
+                            "MONTHLY BUDGET OVERSPEND",
+                            month,
+                            year
+                    ).isPresent();
+            if (!alreadyExists) {
+                Alert alert = Alert.builder()
+                        .message(
+                                "You have exceeded your monthly budget by ₹"
+                                        + String.format("%.2f", overSpent))
+                        .type("MONTHLY BUDGET OVERSPEND")
+                        .readStatus(false)
+                        .month(month)
+                        .year(year)
+                        .createdAt(LocalDateTime.now())
+                        .user(user)
+                        .category(null)
+                        .build();
+                alertRepo.save(alert);
+            }
+        }
     }
 }
