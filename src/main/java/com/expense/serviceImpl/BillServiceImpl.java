@@ -21,58 +21,66 @@ public class BillServiceImpl implements BillService {
     @Autowired
     UserRepository userRepository;
 
-    @Override
-    public String addBill(Bill bill, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
-        bill.setUserId(user.getId());
-        billRepository.save(bill);
-        return "Bill added";
-    }
+        @Override
+        public String addBill(Bill bill, Long userId) {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+            bill.setUserId(user.getId());
+            billRepository.save(bill);
+            return "Bill added";
+        }
 
-    @Override
-    public List<BillResponseDto> getUpcomingBills(Long userId) {
-        List<Bill> dto = billRepository.findByUserIdAndDueDateGreaterThanEqualAndIsPaidFalse(userId, LocalDate.now());
-        return dto.stream()
-                .map(bill -> BillResponseDto.builder()
-                        .billName(bill.getBillName())
-                        .amount(bill.getAmount())
-                        .dueDate(bill.getDueDate())
-                        .isRecurring(bill.getIsRecurring())
-                        .isPaid(bill.getIsPaid())
-                        .build()).toList();
-    }
+        @Override
+        public List<BillResponseDto> getUpcomingBills(Long userId, LocalDate currentDate) {
 
-    @Override
-    public List<BillResponseDto> getOverdueBills(Long userId) {
-        List<Bill> dto = billRepository.findByUserIdAndDueDateLessThanAndIsPaidFalse(userId, LocalDate.now());
-        return dto.stream()
-                .map(bill -> BillResponseDto.builder()
-                        .billName(bill.getBillName())
-                        .amount(bill.getAmount())
-                        .dueDate(bill.getDueDate())
-                        .isRecurring(bill.getIsRecurring())
-                        .isPaid(bill.getIsPaid())
-                        .build()).toList();
-    }
+            List<Bill> dto =
+                    billRepository.findByUserIdAndDueDateGreaterThanEqualAndIsPaidFalse(userId, currentDate);
 
-    //Auto repeat monthly bills using schedulers(for daily schedules)
-    public  void generateRecurringBills(){
-        List<Bill> bills = billRepository.findAll();
-        LocalDate today = LocalDate.now();
+            return dto.stream()
+                    .map(bill -> BillResponseDto.builder()
+                            .billName(bill.getBillName())
+                            .amount(bill.getAmount())
+                            .dueDate(bill.getDueDate())
+                            .isRecurring(bill.getIsRecurring())
+                            .isPaid(bill.getIsPaid())
+                            .build())
+                    .toList();
+        }
 
-        for(Bill bill:bills){
-            if(bill.getIsRecurring() && bill.getDueDate().isBefore(today) && !bill.getIsPaid()){
-                Bill newBill = Bill.builder()
-                        .userId(bill.getUserId())
-                        .billName(bill.getBillName())
-                        .amount(bill.getAmount())
-                        .isRecurring(true)
-                        .isPaid(false)
-                        .dueDate(bill.getDueDate().plusMonths(1))
-                        .build();
-                billRepository.save(newBill);
+        @Override
+        public List<BillResponseDto> getOverdueBills(Long userId, LocalDate currentDate) {
+
+            List<Bill> dto =
+                    billRepository.findByUserIdAndDueDateLessThanAndIsPaidFalse(userId, currentDate);
+
+            return dto.stream()
+                    .map(bill -> BillResponseDto.builder()
+                            .billName(bill.getBillName())
+                            .amount(bill.getAmount())
+                            .dueDate(bill.getDueDate())
+                            .isRecurring(bill.getIsRecurring())
+                            .isPaid(bill.getIsPaid())
+                            .build())
+                    .toList();
+        }
+
+        // recurring logic unchanged
+        public void generateRecurringBills() {
+            List<Bill> bills = billRepository.findAll();
+            LocalDate today = LocalDate.now();
+
+            for (Bill bill : bills) {
+                if (bill.getIsRecurring() && bill.getDueDate().isBefore(today) && !bill.getIsPaid()) {
+                    Bill newBill = Bill.builder()
+                            .userId(bill.getUserId())
+                            .billName(bill.getBillName())
+                            .amount(bill.getAmount())
+                            .isRecurring(true)
+                            .isPaid(false)
+                            .dueDate(bill.getDueDate().plusMonths(1))
+                            .build();
+                    billRepository.save(newBill);
+                }
             }
         }
-    }
 }

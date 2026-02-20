@@ -24,6 +24,7 @@ public class ExpenseController {
     @PostMapping("/add-expense")
     public ResponseEntity<String> addExpense(@RequestBody ExpenseRequest req,Authentication authentication){
         Long userId = (Long) authentication.getPrincipal();
+        System.out.println("ADD userId: " + userId);
         String res = expenseService.addExpense(req,userId);
         return new ResponseEntity<>(res,HttpStatus.CREATED);
     }
@@ -32,6 +33,7 @@ public class ExpenseController {
     @GetMapping("/get-all-expenses")
     public ResponseEntity<List<ExpenseResponseDto>> getAllExpenses(Authentication authentication){
         Long userId = (Long) authentication.getPrincipal();
+        System.out.println("GET userId: " + userId);
         List<ExpenseResponseDto> expenses = expenseService.getAllExpenses(userId);
         return new ResponseEntity<>(expenses,HttpStatus.OK);
     }

@@ -39,9 +39,11 @@ public class ExpenseServiceImpl implements ExpenseService
 
 
     @Override
-    public String addExpense(ExpenseRequest req,Long userId) {
+    public String addExpense(ExpenseRequest req, Long userId) {
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() ->  new UserNotFoundException("User Not Found"));
+                .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
         Expense exp = Expense.builder()
                 .title(req.getTitle())
                 .amount(req.getAmount())
@@ -50,16 +52,19 @@ public class ExpenseServiceImpl implements ExpenseService
                 .user(user)
                 .build();
         Expense saved = expenseRepository.save(exp);
-        monthlyBudgetService.updateSpentAmount(req.getUserId(), saved.getAmount(), saved.getDate());
+        monthlyBudgetService.updateSpentAmount(userId, saved.getAmount(), saved.getDate());
         categoryRepo
                 .findByNameIgnoreCaseAndUserId(saved.getCategory(), userId)
                 .ifPresent(category -> {
                     alertService.checkCategoryOverspend(userId, category.getId());
                 });
+
         alertService.checkIncomeVsExpense(userId);
         alertService.checkMonthlyBudgetOverspend(userId);
+
         return "Expense Added Successfully";
     }
+
 
     @Override
     public List<ExpenseResponseDto> getAllExpenses(Long userId) {
