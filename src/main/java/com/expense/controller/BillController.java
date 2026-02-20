@@ -4,11 +4,13 @@ import com.expense.dtos.otp.BillResponseDto;
 import com.expense.entity.Bill;
 import com.expense.service.BillService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,17 +28,24 @@ public class BillController {
     }
 
     @GetMapping("/get-upcoming-bills")
-    public ResponseEntity<List<BillResponseDto>> getUpcomingBills(Authentication authentication){
+    public ResponseEntity<List<BillResponseDto>> getUpcomingBills(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate currentDate, Authentication authentication) {
+
         Long userId = (Long) authentication.getPrincipal();
-        List<BillResponseDto> billList = billService.getUpcomingBills(userId);
-        return new ResponseEntity<>(billList,HttpStatus.OK);
+        List<BillResponseDto> billList =
+                billService.getUpcomingBills(userId, currentDate);
+        return new ResponseEntity<>(billList, HttpStatus.OK);
     }
 
     @GetMapping("/get-overdue-bills")
-    public ResponseEntity<List<BillResponseDto>> getOverdueBills(Authentication authentication) {
-        Long userId = (Long) authentication.getPrincipal();
-        List<BillResponseDto> billList = billService.getOverdueBills(userId);
-        return new ResponseEntity<>(billList,HttpStatus.OK);
-    }
+    public ResponseEntity<List<BillResponseDto>> getOverdueBills(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate currentDate, Authentication authentication) {
 
+        Long userId = (Long) authentication.getPrincipal();
+        List<BillResponseDto> billList =
+                billService.getOverdueBills(userId, currentDate);
+        return new ResponseEntity<>(billList, HttpStatus.OK);
+    }
 }
+
+

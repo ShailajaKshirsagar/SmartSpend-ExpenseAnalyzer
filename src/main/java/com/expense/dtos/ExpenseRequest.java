@@ -1,5 +1,6 @@
 package com.expense.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -15,5 +16,6 @@ public class ExpenseRequest {
     private String title;
     private Double amount;
     private String category;
+    @JsonIgnore
     private Long userId;
 }
