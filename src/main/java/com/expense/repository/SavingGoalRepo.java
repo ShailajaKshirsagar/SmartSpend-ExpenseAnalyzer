@@ -8,10 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SavingGoalRepo extends JpaRepository<SavingGoal,Long> {
 
     @Query("SELECT s FROM SavingGoal s WHERE s.user.id =:userId")
     List<SavingGoal> findByUserId(@Param("userId") Long userId);
+
+    Optional<Object> findByIdAndUserId(Long goalId, Long userId);
 }
