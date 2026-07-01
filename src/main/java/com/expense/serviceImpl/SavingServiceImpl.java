@@ -134,4 +134,21 @@ public class SavingServiceImpl implements SavingService {
         return suggestions;
     }
 
+    //edit
+    @Override
+    public String updateSavingGoal(Long goalId, SavingGoalRequestDto dto, Long userId) {
+        SavingGoal goal = (SavingGoal) savingGoalRepo
+                .findByIdAndUserId(goalId, userId)
+                .orElseThrow(() -> new RuntimeException("Saving Goal not found"));
+
+        goal.setTitle(dto.getGoalName());
+        goal.setTargetAmount(dto.getTargetAmount());
+        savingGoalRepo.save(goal);
+        return "Saving Goal Updated Successfully";
+    }
+
+    @Override
+    public List<SavingGoal> getAllSavings(Long userId) {
+        return savingGoalRepo.findByUserId(userId);
+    }
 }

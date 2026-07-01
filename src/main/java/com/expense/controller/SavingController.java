@@ -1,6 +1,7 @@
 package com.expense.controller;
 
 import com.expense.dtos.budget_savings.*;
+import com.expense.entity.SavingGoal;
 import com.expense.service.SavingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,28 @@ public class SavingController {
     public ResponseEntity<List<SmartSuggestionDto>> getSuggestions(Authentication authentication){
         Long userId = (Long) authentication.getPrincipal();
         return new ResponseEntity<>(savingService.getSuggestions(userId),HttpStatus.OK);
+    }
+
+    //getall savings
+    @GetMapping("/get-all-savings")
+    public ResponseEntity<List<SavingGoal>> getAllSavings(Authentication authentication) {
+
+        Long userId = (Long) authentication.getPrincipal();
+        List<SavingGoal> savings = savingService.getAllSavings(userId);
+
+        return ResponseEntity.ok(savings);
+    }
+
+    //update
+    @PutMapping("/update-goal/{goalId}")
+    public ResponseEntity<String> updateSavingGoal(
+            @PathVariable Long goalId,
+            @RequestBody SavingGoalRequestDto dto,
+            Authentication authentication) {
+
+        Long userId = (Long) authentication.getPrincipal();
+        String message = savingService.updateSavingGoal(goalId, dto, userId);
+
+        return ResponseEntity.ok(message);
     }
 }
